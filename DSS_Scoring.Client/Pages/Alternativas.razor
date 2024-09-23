@@ -1,0 +1,50 @@
+﻿@page "/Pages/Alternativas"
+
+<PageTitle>Alternativas</PageTitle>
+
+<div class="row">
+    <div class="col-md-1">
+        <label for="id_proyecto">ID Proyecto</label>
+    </div>
+    <div class="col-md-1">
+        <Dropdown Color="DropdownColor.Primary">
+        <DropdownToggleButton>Proyectos</DropdownToggleButton>
+        <DropdownMenu>
+            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 1</DropdownItem>
+            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 2</DropdownItem>
+            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 3</DropdownItem>
+        </DropdownMenu>
+        </Dropdown>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="col-md-1">
+        <label for="ID">ID</label>
+    </div>
+    <div class="col-md-1">
+        <input type="text" id="id_text" class="form-control">
+    </div>
+</div>
+    
+<div class="row my-4">
+    <div class="col-md-1">
+        <label for="Nombre">Nombre</label>
+    </div>
+    <div class="col-md-1">
+        <input type="text" id="nombre_text" class="form-control">
+    </div>
+</div>
+
+<div class="row my-10">
+    <div class="col-md-1">
+        <label for="descripcion">Descripcion</label>
+    </div>
+    <div class="col-md-1">
+        <input type="text" style="width: 300px; height: 100px;" id="descripcion_text" class="form-control">
+    </div>
+</div>
+
+@code {
+
+}

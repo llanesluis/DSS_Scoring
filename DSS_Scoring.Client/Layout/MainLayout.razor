@@ -1,13 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@inject NavigationManager NavigationManager
+
+@using static Microsoft.AspNetCore.Components.NavigationManager
+
+@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="top-row">
+            <div class="button-row">
+                <button class="btn btn-primary"> <Icon Name="IconName.Plus"/>Nuevo</button>
+                <button class="btn btn-secondary"> <Icon Name="IconName.Pencil"/> Editar</button>
+                <button class="btn btn-success"> <Icon Name="IconName.ZoomIn"/> Consultar</button>
+                <button class="btn btn-warning"> <Icon Name="IconName.X"/> Eliminar</button>
+            </div>
+            <div class="button-row right-button">
+                <button class="btn btn-primary"> <Icon Name="IconName.Floppy" />Guardar</button>
+                <button class="btn btn-warning" @onclick="LoadLanding"> <Icon Name="IconName.ArrowClockwise" />Cancelar</button>
+            </div>
         </div>
 
         <article class="content px-4">
@@ -21,3 +31,14 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code{
+
+    private void LoadLanding()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}
+
+    

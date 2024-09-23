@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DSS_Scoring.Client\DSS_Scoring.Client.csproj" />
+    <PackageReference Include="Blazor.Bootstrap" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
   </ItemGroup>
 
