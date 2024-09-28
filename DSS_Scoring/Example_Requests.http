@@ -1,0 +1,23 @@
+### Obtener la lista de proyectos
+GET http://localhost:5173/api/proyectos
+
+###
+
+### Crear un nuevo proyecto
+POST http://localhost:5173/api/proyectos
+Content-Type: application/json
+
+{
+    "Nombre": "Segundo proyecto",
+    "Objetivo": "Prueba del segundo proyecto",
+}
+
+###
+
+### Obtener un proyecto específico por su ID (ejemplo: ID 1)
+GET http://localhost:5173/api/proyectos/1
+
+###
+
+### Eliminar un proyecto específico por su ID (ejemplo: ID 1)
+DELETE http://localhost:5173/api/proyectos/1
