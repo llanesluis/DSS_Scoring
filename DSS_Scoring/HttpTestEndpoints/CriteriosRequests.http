@@ -1,0 +1,16 @@
+﻿### Obtener la lista de criterios
+GET http://localhost:5173/api/criterios
+
+### Obtener un criterio específico por su ID y el ID del proyecto
+GET http://localhost:5173/api/criterios/1/3
+
+### Crear un nuevo criterio
+POST http://localhost:5173/api/criterios
+Content-Type: application/json
+
+{
+    "idProyecto": 3,
+    "nombre": "NUEVOOOOOOOOOOOO",
+    "descripcion": "NUEVOOOOOOOOOOOO",
+    "peso": 1
+}

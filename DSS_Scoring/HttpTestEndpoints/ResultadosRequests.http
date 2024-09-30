@@ -1,0 +1,16 @@
+﻿### Obtener la lista de resultados
+GET http://localhost:5173/api/resultados
+
+### Obtener un resultado específico por ID de proyecto y ID de alternativa
+GET http://localhost:5173/api/resultados/3/3
+
+### Crear un nuevo resultado
+POST http://localhost:5173/api/resultados
+Content-Type: application/json
+
+{
+    "idProyecto": 3,
+    "idAlternativa": 3,
+    "score": 75
+}
+

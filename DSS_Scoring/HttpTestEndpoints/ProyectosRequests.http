@@ -1,0 +1,15 @@
+﻿### Obtener la lista de proyectos
+GET http://localhost:5173/api/proyectos
+
+### Crear un nuevo proyecto
+POST http://localhost:5173/api/proyectos
+Content-Type: application/json
+
+{
+    "Nombre": "Mejor computadora",
+    "Objetivo": "Seleccionar la mejor computadora"
+}
+
+### Obtener un proyecto específico por su ID (ejemplo: ID 1)
+GET http://localhost:5173/api/proyectos/3
+
