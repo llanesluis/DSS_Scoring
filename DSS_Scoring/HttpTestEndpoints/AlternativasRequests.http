@@ -1,0 +1,15 @@
+﻿### Obtener la lista de alternativas
+GET http://localhost:5173/api/alternativas
+
+### Crear una nueva alternativa
+POST http://localhost:5173/api/alternativas
+Content-Type: application/json
+
+{
+    "idProyecto": 3,
+    "nombre": "NUEVAAAAAAAAAAAAAAAAA",
+    "descripcion": "JAJAJJA"
+}
+
+### Obtener una alternativa específica por su ID y el ID del proyecto
+GET http://localhost:5173/api/alternativas/2/3

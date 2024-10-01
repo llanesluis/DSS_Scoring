@@ -1,0 +1,17 @@
+﻿### Obtener la lista de matrices
+GET http://localhost:5173/api/matrices
+
+### Obtener una matriz específica por ID de proyecto, ID de alternativa y ID de criterio
+GET http://localhost:5173/api/matrices/3/2/1
+
+### Crear una nueva matriz
+POST http://localhost:5173/api/matrices
+Content-Type: application/json
+
+{
+    "idProyecto": 3,
+    "idAlternativa": 3,
+    "idCriterio": 3,
+    "valor": 9
+}
+
