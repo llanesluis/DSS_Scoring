@@ -68,7 +68,7 @@ namespace DSS_Scoring.Controllers
         // Crear una alternativa, recibe un objeto con "IdProyecto" (debe ser un Id existente), "Nombre" y "Descripcion"
         // POST: api/Alternativas
         [HttpPost]
-        public async Task<ActionResult<Alternativa>> Post(Alternativa _nuevaAlternativa)
+        public async Task<ActionResult<AlternativaDTO>> Post(AlternativaDTO _nuevaAlternativa)
         {
             var nuevaAlternativa = new Alternativa
             {

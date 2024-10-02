@@ -111,7 +111,7 @@ namespace DSS_Scoring.Controllers
         // "IdAlternativa" (debe ser un Id existente) y "Score"
         // POST: api/Resultados
         [HttpPost]
-        public async Task<ActionResult<Resultado>> Post(Resultado _resultado)
+        public async Task<ActionResult<ResultadoDTO>> Post(ResultadoDTO _resultado)
         {
             var resultado = new Resultado
             {
