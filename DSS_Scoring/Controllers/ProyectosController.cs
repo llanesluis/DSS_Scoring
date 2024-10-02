@@ -76,7 +76,7 @@ namespace DSS_Scoring.Controllers
         // Crear un nuevo proyecto, recibe un objeto con "Nombre" y "Objetivo"
         // POST: api/Proyectos
         [HttpPost]
-        public async Task<ActionResult<Proyecto>> Post(Proyecto _nuevoProyecto)
+        public async Task<ActionResult<ProyectoDTO>> Post(ProyectoDTO _nuevoProyecto)
         {
             var nuevoProyecto = new Proyecto
             {

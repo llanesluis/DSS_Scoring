@@ -18,6 +18,7 @@ namespace DSS_Scoring.Controllers
             _context = context;
         }
 
+        // Obtener una lista de todas los criterios
         // GET: api/Criterios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CriterioDTO>>> Get()
@@ -29,6 +30,7 @@ namespace DSS_Scoring.Controllers
             return Ok(results);
         }
 
+        // Obtener el criterio individual por su Id y la Id del proyecto al que pertenece (ambas Id son necesarias)
         // GET: api/Criterios/{id}/{idProyecto}
         [HttpGet("{id}/{idProyecto}")]
         public async Task<ActionResult<Criterio>> GetById(int id, int idProyecto)
@@ -45,6 +47,7 @@ namespace DSS_Scoring.Controllers
             return Ok(result);
         }
 
+        // Obtener una lista de criterios por el Id del proyecto al que pertenecen
         // GET: api/Criterios/PorIdProyecto/{idProyecto}
         [HttpGet("PorIdProyecto/{idProyecto}")]
         public async Task<ActionResult<CriterioDTO>> GetCriteriosPorIdProyecto(int idProyecto)
@@ -66,7 +69,7 @@ namespace DSS_Scoring.Controllers
         // Crear un nuevo criterio, recibe un objeto con "IdProyecto" (debe ser un Id existente), "Nombre", "Descripcion" y "Peso" (1-10)
         // POST: api/Criterios
         [HttpPost]
-        public async Task<ActionResult<Criterio>> Post(Criterio _nuevoCriterio)
+        public async Task<ActionResult<CriterioDTO>> Post(CriterioDTO _nuevoCriterio)
         {
             var nuevoCriterio = new Criterio
             {
