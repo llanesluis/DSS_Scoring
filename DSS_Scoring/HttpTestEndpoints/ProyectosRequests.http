@@ -6,8 +6,8 @@ POST http://localhost:5173/api/proyectos
 Content-Type: application/json
 
 {
-    "Nombre": "Mejor computadora",
-    "Objetivo": "Seleccionar la mejor computadora"
+    "Nombre": "PEPPA PIG",
+    "Objetivo": "Seleccionar el mejor capitulo de PEPPA PIG"
 }
 
 ### Obtener un proyecto específico por su ID (ejemplo: ID 1)

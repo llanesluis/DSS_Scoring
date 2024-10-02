@@ -1,6 +1,9 @@
 ﻿using DSS_Scoring.Data;
+using DSS_Scoring.DTOs;
 using DSS_Scoring.Models;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DSS_Scoring.Controllers
 {
@@ -14,37 +17,113 @@ namespace DSS_Scoring.Controllers
             _context = context;
         }
 
+        // Obtener la lista de todos los resultados sin detalles
         // GET api/Resultados/
         [HttpGet]
-        public IEnumerable<Resultado> GetAll()
+        public async Task<ActionResult<IEnumerable<ResultadoDTO>>> GetAll()
         {
-            var resultados = _context.Resultados.ToList();
-            return resultados;
+            var res = await _context.Resultados.ToListAsync();
+            
+            var resultados = res.Adapt<List<ResultadoDTO>>();
+
+            return Ok(resultados);
 
         }
 
+        // Obtener la lista de todos los resultados con detalles
+        // GET api/Resultados/Detalles
+        [HttpGet("Detalles/")]
+        public async Task<ActionResult<IEnumerable<ResultadoWithDetailsDTO>>> GetResultadosConDetalles()
+        {
+            var _resultados = await _context.Resultados.ToListAsync();
+
+            List<ResultadoWithDetailsDTO> resultados = new List<ResultadoWithDetailsDTO>();
+
+            foreach (var resultado in _resultados)
+            {
+                var proyecto = _context.Proyectos.Find(resultado.IdProyecto);
+                var alternativa = _context.Alternativas.Find(resultado.IdAlternativa, resultado.IdProyecto);
+
+                var _resultado = new ResultadoWithDetailsDTO
+                {
+                    IdProyecto = resultado.IdProyecto,
+                    IdAlternativa = resultado.IdAlternativa,
+                    Score = resultado.Score,
+                    Proyecto = proyecto.Adapt<ProyectoDTO>(),
+                    Alternativa = alternativa.Adapt<AlternativaDTO>()
+                };
+
+                resultados.Add(_resultado);
+            }
+
+            return Ok(resultados);
+
+        }
+
+        // Obtiene el registro de un resultado en específico, sin detalles.
+        // Necesita el id del proyecto y el id de la alternativa (necesarios)
         // GET: api/Resultados/{idProyecto}/{idAlternativa}
         [HttpGet("{idProyecto}/{idAlternativa}")]
-        public async Task<ActionResult<Resultado>> GetById(int idProyecto, int idAlternativa)
+        public async Task<ActionResult<ResultadoDTO>> GetById(int idProyecto, int idAlternativa)
         {
-            var resultado = await _context.Resultados.FindAsync(idProyecto, idAlternativa);
+            var res = await _context.Resultados.FindAsync(idProyecto, idAlternativa);
 
-            if (resultado == null)
+            if (res == null)
             {
                 return NotFound();
             }
 
+            var resultado = res.Adapt<ResultadoDTO>();
+
             return Ok(resultado);
         }
 
+
+        // Obtener el registro de un resultado en específico, con detalles.
+        // Necesita el id del proyecto y el id de la alternativa (necesarios)
+        // GET api/Resultados/Detalles
+        [HttpGet("Detalles/{idProyecto}/{idAlternativa}")]
+        public async Task<ActionResult<ResultadoWithDetailsDTO>> GetResultadosConDetallesPorId(int idProyecto, int idAlternativa)
+        {
+            var res = await _context.Resultados.FindAsync(idProyecto, idAlternativa);
+
+            if (res == null)
+            {
+                return NotFound();
+            }
+
+            var proyecto = _context.Proyectos.Find(idProyecto);
+            var alternativa = _context.Alternativas.Find(idAlternativa, idProyecto);
+
+            var resultado = new ResultadoWithDetailsDTO
+            {
+                IdProyecto = res.IdProyecto,
+                IdAlternativa = res.IdAlternativa,
+                Score = res.Score,
+                Proyecto = proyecto.Adapt<ProyectoDTO>(),
+                Alternativa = alternativa.Adapt<AlternativaDTO>()
+            };
+
+            return Ok(resultado);
+        }
+
+        // Crear un resultado, recibe un objeto con "IdProyecto" (debe ser un Id existente),
+        // "IdAlternativa" (debe ser un Id existente) y "Score"
         // POST: api/Resultados
         [HttpPost]
-        public async Task<ActionResult<Resultado>> Post(Resultado resultado)
+        public async Task<ActionResult<Resultado>> Post(Resultado _resultado)
         {
+            var resultado = new Resultado
+            {
+                IdProyecto = _resultado.IdProyecto,
+                IdAlternativa = _resultado.IdAlternativa,
+                Score = _resultado.Score
+            };
+
             _context.Resultados.Add(resultado);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { idProyecto = resultado.IdProyecto, idAlternativa = resultado.IdAlternativa }, resultado);
+            return CreatedAtAction(nameof(GetById), new { idProyecto = resultado.IdProyecto, idAlternativa = resultado.IdAlternativa }, resultado.Adapt<ResultadoDTO>());
         }
     }
 

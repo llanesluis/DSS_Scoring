@@ -1,6 +1,8 @@
 ﻿using DSS_Scoring.Client.Pages;
 using DSS_Scoring.Data;
+using DSS_Scoring.DTOs;
 using DSS_Scoring.Models;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +20,13 @@ namespace DSS_Scoring.Controllers
 
         // GET: api/Criterios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Criterio>>> Get()
+        public async Task<ActionResult<IEnumerable<CriterioDTO>>> Get()
         {
             var criterios = await _context.Criterios.ToListAsync();
-            return Ok(criterios);
+
+            var results = criterios.Adapt<List<CriterioDTO>>();
+
+            return Ok(results);
         }
 
         // GET: api/Criterios/{id}/{idProyecto}
@@ -35,17 +40,46 @@ namespace DSS_Scoring.Controllers
                 return NotFound();
             }
 
-            return Ok(criterio);
+            var result = criterio.Adapt<CriterioDTO>();
+
+            return Ok(result);
         }
 
+        // GET: api/Criterios/PorIdProyecto/{idProyecto}
+        [HttpGet("PorIdProyecto/{idProyecto}")]
+        public async Task<ActionResult<CriterioDTO>> GetCriteriosPorIdProyecto(int idProyecto)
+        {
+            var proyecto = await _context.Proyectos.FindAsync(idProyecto);
+
+            if (proyecto == null)
+            {
+                return NotFound();
+            }
+
+            var criteriosPorProyecto = await _context.Criterios.Where(c => c.IdProyecto == idProyecto).ToListAsync();
+
+            var results = criteriosPorProyecto.Adapt<List<CriterioDTO>>();
+
+            return Ok(results);
+        }
+
+        // Crear un nuevo criterio, recibe un objeto con "IdProyecto" (debe ser un Id existente), "Nombre", "Descripcion" y "Peso" (1-10)
         // POST: api/Criterios
         [HttpPost]
-        public async Task<ActionResult<Criterio>> Post(Criterio criterio)
+        public async Task<ActionResult<Criterio>> Post(Criterio _nuevoCriterio)
         {
-            _context.Criterios.Add(criterio);
+            var nuevoCriterio = new Criterio
+            {
+                IdProyecto = _nuevoCriterio.IdProyecto,
+                Nombre = _nuevoCriterio.Nombre,
+                Descripcion = _nuevoCriterio.Descripcion,
+                Peso = _nuevoCriterio.Peso
+            };
+
+            _context.Criterios.Add(nuevoCriterio);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", new { id = criterio.Id, idProyecto = criterio.IdProyecto }, criterio);
+            return CreatedAtAction("Get", new { id = nuevoCriterio.Id, idProyecto = nuevoCriterio.IdProyecto }, nuevoCriterio.Adapt<CriterioDTO>());
 
         }
     }

@@ -6,9 +6,9 @@ POST http://localhost:5173/api/alternativas
 Content-Type: application/json
 
 {
-    "idProyecto": 3,
-    "nombre": "NUEVAAAAAAAAAAAAAAAAA",
-    "descripcion": "JAJAJJA"
+    "idProyecto": 12,
+    "nombre": "JORGE",
+    "descripcion": "ESTE ES EL HERMANO DE PEPPA"
 }
 
 ### Obtener una alternativa específica por su ID y el ID del proyecto

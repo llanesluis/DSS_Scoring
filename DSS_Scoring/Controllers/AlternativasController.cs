@@ -1,5 +1,7 @@
 ﻿using DSS_Scoring.Data;
+using DSS_Scoring.DTOs;
 using DSS_Scoring.Models;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,17 +17,22 @@ namespace DSS_Scoring.Controllers
             _context = context;
         }
 
+        // Obtener una lista de todas las alternativas
         // GET: api/Alternativas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Alternativa>>> Get()
+        public async Task<ActionResult<IEnumerable<AlternativaDTO>>> Get()
         {
             var alternativas = await _context.Alternativas.ToListAsync();
-            return Ok(alternativas);
+
+            var results = alternativas.Adapt<List<AlternativaDTO>>();
+
+            return Ok(results);
         }
 
+        // Obtener una alternativa por su Id y la Id del proyecto al que pertenece (ambas Id son necesarias)
         // GET: api/Alternativas/{id}/{idProyecto}
         [HttpGet("{id}/{idProyecto}")]
-        public async Task<ActionResult<Alternativa>> GetById(int id, int idProyecto)
+        public async Task<ActionResult<AlternativaDTO>> GetById(int id, int idProyecto)
         {
             var alternativa = await _context.Alternativas.FindAsync(id, idProyecto);
 
@@ -34,17 +41,46 @@ namespace DSS_Scoring.Controllers
                 return NotFound();
             }
 
-            return Ok(alternativa);
+            var result = alternativa.Adapt<AlternativaDTO>();
+
+            return Ok(result);
         }
 
+        // Obtener una lista de alternativas por el Id del proyecto al que pertenecen
+        // GET: api/Alternativas/PorIdProyecto/{idProyecto}
+        [HttpGet("PorIdProyecto/{idProyecto}")]
+        public async Task<ActionResult<AlternativaDTO>> GetAlternativasPorIdProyecto(int idProyecto)
+        {
+            var proyecto = await _context.Proyectos.FindAsync(idProyecto);
+
+            if (proyecto == null)
+            {
+                return NotFound();
+            }
+
+            var alternativasPorProyecto = await _context.Alternativas.Where(a=> a.IdProyecto == idProyecto).ToListAsync();
+
+            var results = alternativasPorProyecto.Adapt<List<AlternativaDTO>>();
+
+            return Ok(results);
+        }
+
+        // Crear una alternativa, recibe un objeto con "IdProyecto" (debe ser un Id existente), "Nombre" y "Descripcion"
         // POST: api/Alternativas
         [HttpPost]
-        public async Task<ActionResult<Alternativa>> Post(Alternativa alternativa)
+        public async Task<ActionResult<Alternativa>> Post(Alternativa _nuevaAlternativa)
         {
-            _context.Alternativas.Add(alternativa);
+            var nuevaAlternativa = new Alternativa
+            {
+                IdProyecto = _nuevaAlternativa.IdProyecto,
+                Nombre = _nuevaAlternativa.Nombre,
+                Descripcion = _nuevaAlternativa.Descripcion
+            };
+
+            _context.Alternativas.Add(nuevaAlternativa);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Get", new { id = alternativa.Id, idProyecto = alternativa.IdProyecto }, alternativa);
+            return CreatedAtAction("Get", new { id = nuevaAlternativa.Id, idProyecto = nuevaAlternativa.IdProyecto }, nuevaAlternativa.Adapt<AlternativaDTO>());
         }
     }
 }

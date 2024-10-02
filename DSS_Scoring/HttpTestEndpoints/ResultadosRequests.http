@@ -11,6 +11,6 @@ Content-Type: application/json
 {
     "idProyecto": 3,
     "idAlternativa": 3,
-    "score": 75
+    "score": 50
 }
 
