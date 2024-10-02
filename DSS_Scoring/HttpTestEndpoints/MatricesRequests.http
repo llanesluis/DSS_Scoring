@@ -9,9 +9,9 @@ POST http://localhost:5173/api/matrices
 Content-Type: application/json
 
 {
-    "idProyecto": 3,
-    "idAlternativa": 3,
-    "idCriterio": 3,
-    "valor": 9
+    "idProyecto": 12,
+    "idAlternativa": 8,
+    "idCriterio": 10,
+    "valor": 5
 }
 

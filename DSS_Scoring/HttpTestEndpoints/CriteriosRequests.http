@@ -9,8 +9,7 @@ POST http://localhost:5173/api/criterios
 Content-Type: application/json
 
 {
-    "idProyecto": 3,
-    "nombre": "NUEVOOOOOOOOOOOO",
-    "descripcion": "NUEVOOOOOOOOOOOO",
-    "peso": 1
+    "idProyecto": 12,
+    "descripcion": "EL QUE ESTE MAS GORDO TIENE MAS PUNTAJE",
+    "peso": 5
 }
