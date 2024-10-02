@@ -9,14 +9,11 @@
     <main>
         <div class="top-row">
             <div class="button-row">
-                <button class="btn btn-primary"> <Icon Name="IconName.Plus"/>Nuevo</button>
-                <button class="btn btn-secondary"> <Icon Name="IconName.Pencil"/> Editar</button>
-                <button class="btn btn-success"> <Icon Name="IconName.ZoomIn"/> Consultar</button>
-                <button class="btn btn-warning"> <Icon Name="IconName.X"/> Eliminar</button>
-            </div>
-            <div class="button-row right-button">
-                <button class="btn btn-primary"> <Icon Name="IconName.Floppy" />Guardar</button>
-                <button class="btn btn-warning" @onclick="LoadLanding"> <Icon Name="IconName.ArrowClockwise" />Cancelar</button>
+                <Button  Color="ButtonColor.Primary" TooltipTitle="Proyectos" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadProyectos"><Icon Name="IconName.Archive" Size="IconSize.x6" /></Button>
+                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Alternativas" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadAlternativas"><Icon Name="IconName.CardChecklist" Size="IconSize.x6" /></Button>
+                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Criterios" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadCriterios"><Icon Name="IconName.CardList" Size="IconSize.x6" /></Button>
+                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Matriz" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadMatriz"><Icon Name="IconName.FileEarmarkSpreadsheet" Size="IconSize.x6" /></Button>
+                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Calcular Score" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadScore"><Icon Name="IconName.Clipboard" Size="IconSize.x6" /></Button>
             </div>
         </div>
 
@@ -37,6 +34,27 @@
     private void LoadLanding()
     {
         NavigationManager.NavigateTo("/");
+    }
+
+    private void LoadProyectos()
+    {
+        NavigationManager.NavigateTo("/Pages/Proyectos");
+    }
+    private void LoadAlternativas()
+    {
+        NavigationManager.NavigateTo("/Pages/Alternativas");
+    }
+    private void LoadCriterios()
+    {
+        NavigationManager.NavigateTo("/Pages/Criterios");
+    }
+    private void LoadMatriz()
+    {
+        NavigationManager.NavigateTo("/Pages/Matriz");
+    }
+    private void LoadScore()
+    {
+        NavigationManager.NavigateTo("/Pages/Score");
     }
 
 }

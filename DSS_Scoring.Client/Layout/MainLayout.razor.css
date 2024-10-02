@@ -6,6 +6,7 @@
 
 .button-row {
     display: flex;
+    gap: 20px;
     justify-content: space-between; /* Distributes buttons evenly */
     margin: 0; /* Remove default margins */
 }
@@ -33,6 +34,7 @@ main {
     display: flex;
     align-items: center;
     font-size: 40px;
+    width: 100%;
 }
 
 @media (max-width: 640.98px) {
