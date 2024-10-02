@@ -123,7 +123,7 @@ namespace DSS_Scoring.Controllers
         // IdProyecto (id existente), IdAlternativa (id existente), IdCriterio (id existente) y Valor.
         // POST: api/Matrices
         [HttpPost]
-        public async Task<ActionResult<Matriz>> Post(Matriz _matriz)
+        public async Task<ActionResult<MatrizDTO>> Post(MatrizDTO _matriz)
         {
             var matriz = new Matriz
             {
