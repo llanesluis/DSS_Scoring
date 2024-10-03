@@ -1,31 +1,69 @@
 ﻿@page "/Pages/Proyectos"
+@using System.Text
 
 <PageTitle>Proyectos</PageTitle>
 
 <div class="row">
     <div class="col-md-1">
-        <label for="id">ID</label>
+        <label for="nombre">Nombre</label>
     </div>
     <div class="col-md-1">
-        <input type="text" id="id_text" class="form-control">
+        <input @bind="Name" type="text" id="nombre_text" class="form-control">
     </div>
 </div>
 
 <div class="row my-4">
     <div class="col-md-1">
-        <label for="nombre">Nombre</label>
-    </div>
-    <div class="col-md-1">
-        <input type="text" id="nombre_text" class="form-control">
-    </div>
-</div>
-
-<div class="row my-8">
-    <div class="col-md-1">
         <label for="objetivo">Objectivo</label>
     </div>
     <div class="col-md-1">
-        <input type="text" style="width: 300px; height: 100px;" id="objevito_text" class="form-control">
+        <input @bind="Objective" type="text" style="width: 300px; height: 100px;" id="objevito_text" class="form-control">
     </div>
 </div>
 
+<div class="button-row right-button">
+    <button class="btn btn-primary" @onclick="UploadData"> <Icon Name="IconName.Floppy" />Guardar</button>
+    <button class="btn btn-warning" @onclick="Limpiar"> <Icon Name="IconName.ArrowClockwise" />Cancelar</button>
+</div>
+
+@code{
+
+    private static string Name { get; set; }
+    private static string Objective { get; set; }
+
+    static string url = "http://localhost:5173/api/proyectos";
+    static string content = $"{{ \"Nombre\": \"{Name}\", \"Objetivo\": \"{Objective}\" }}";
+
+
+    async void UploadData()
+    {
+
+        
+        using (HttpClient client = new HttpClient())
+        {
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(url, httpContent);
+
+            //await JSRuntime.InvokeVoidAsync("alert", "Sent" + Name + " " + Objective);
+
+            if (response.IsSuccessStatusCode)
+                {
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Response content: " + responseContent);
+                }
+            else
+            {
+                Console.WriteLine("Request failed with status code: " + response.StatusCode);
+            }
+        }
+         
+        
+    }
+
+    public void Limpiar()
+    {
+        
+    }
+
+}
