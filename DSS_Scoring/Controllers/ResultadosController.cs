@@ -1,6 +1,6 @@
 ﻿using DSS_Scoring.Data;
-using DSS_Scoring.DTOs;
 using DSS_Scoring.Models;
+using DSS_Scoring.Shared.DTOs;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +23,7 @@ namespace DSS_Scoring.Controllers
         public async Task<ActionResult<IEnumerable<ResultadoDTO>>> GetAll()
         {
             var res = await _context.Resultados.ToListAsync();
-            
+
             var resultados = res.Adapt<List<ResultadoDTO>>();
 
             return Ok(resultados);
