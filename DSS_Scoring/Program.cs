@@ -6,11 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped(sp =>
-    new HttpClient
-    {
-        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7243")
-    });
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -73,6 +68,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(DSS_Scoring.Client._Imports).Assembly);
 
 // Manera moderna de mapear los controladores 
-app.MapControllers();;
+app.MapControllers();
 
 app.Run();

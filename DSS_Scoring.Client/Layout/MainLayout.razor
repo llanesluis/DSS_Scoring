@@ -5,23 +5,20 @@
 @inherits LayoutComponentBase
 
 <div class="page">
-
-    <main>
-        <div class="top-row">
-            <div class="button-row">
-                <Button  Color="ButtonColor.Primary" TooltipTitle="Proyectos" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadProyectos"><Icon Name="IconName.Archive" Size="IconSize.x6" /></Button>
-                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Alternativas" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadAlternativas"><Icon Name="IconName.CardChecklist" Size="IconSize.x6" /></Button>
-                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Criterios" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadCriterios"><Icon Name="IconName.CardList" Size="IconSize.x6" /></Button>
-                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Matriz" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadMatriz"><Icon Name="IconName.FileEarmarkSpreadsheet" Size="IconSize.x6" /></Button>
-                <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Calcular Score" TooltipPlacement="TooltipPlacement.Top" @onclick="LoadScore"><Icon Name="IconName.Clipboard" Size="IconSize.x6" /></Button>
-            </div>
+    <div class="top-row">
+        <div class="button-row">
+            <Button  Color="ButtonColor.Primary" TooltipTitle="Proyectos" TooltipPlacement="TooltipPlacement.Bottom" @onclick="LoadProyectos"><Icon Name="IconName.Archive" Size="IconSize.x6" /></Button>
+            <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Alternativas" TooltipPlacement="TooltipPlacement.Bottom" @onclick="LoadAlternativas"><Icon Name="IconName.CardChecklist" Size="IconSize.x6" /></Button>
+            <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Criterios" TooltipPlacement="TooltipPlacement.Bottom" @onclick="LoadCriterios"><Icon Name="IconName.CardList" Size="IconSize.x6" /></Button>
+            <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Matriz" TooltipPlacement="TooltipPlacement.Bottom" @onclick="LoadMatriz"><Icon Name="IconName.FileEarmarkSpreadsheet" Size="IconSize.x6" /></Button>
+            <Button Class="button-row button" Color="ButtonColor.Primary" TooltipTitle="Calcular Score" TooltipPlacement="TooltipPlacement.Bottom" @onclick="LoadScore"><Icon Name="IconName.Clipboard" Size="IconSize.x6" /></Button>
         </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    </div>
 </div>
+
+<article class="content px-4">
+    @Body
+</article>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

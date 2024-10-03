@@ -1,5 +1,7 @@
 ﻿@page "/Pages/Proyectos"
 @using System.Text
+@using DSS_Scoring.Shared.DTOs
+@using System.Net.Http;
 
 <PageTitle>Proyectos</PageTitle>
 
@@ -8,7 +10,7 @@
         <label for="nombre">Nombre</label>
     </div>
     <div class="col-md-1">
-        <input @bind="Name" type="text" id="nombre_text" class="form-control">
+        <input @bind="Name"type="text" id="nombre_text" class="form-control">
     </div>
 </div>
 
@@ -32,38 +34,30 @@
     private static string Objective { get; set; }
 
     static string url = "http://localhost:5173/api/proyectos";
-    static string content = $"{{ \"Nombre\": \"{Name}\", \"Objetivo\": \"{Objective}\" }}";
-
 
     async void UploadData()
     {
 
-        
         using (HttpClient client = new HttpClient())
         {
-            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await client.PostAsync(url, httpContent);
-
-            //await JSRuntime.InvokeVoidAsync("alert", "Sent" + Name + " " + Objective);
-
-            if (response.IsSuccessStatusCode)
-                {
-                    string responseContent = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Response content: " + responseContent);
-                }
-            else
+            ProyectoDTO Proyecto = new ProyectoDTO
             {
-                Console.WriteLine("Request failed with status code: " + response.StatusCode);
-            }
+                Id = 35,
+                Nombre = Name,
+                Objetivo = Objective
+            };
+
+            await client.PostAsJsonAsync(url, Proyecto);
+
         }
-         
-        
+
     }
 
     public void Limpiar()
     {
-        
+        Name = "";
+        Objective = "";
     }
 
 }
