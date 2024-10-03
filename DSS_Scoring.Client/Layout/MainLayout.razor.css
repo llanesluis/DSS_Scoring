@@ -2,12 +2,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    Justify-content: center;
+    Gap: 24px;
 }
 
 .button-row {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between; /* Distributes buttons evenly */
     margin: 0; /* Remove default margins */
 }
 
