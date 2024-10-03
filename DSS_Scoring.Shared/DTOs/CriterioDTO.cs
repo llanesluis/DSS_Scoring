@@ -1,4 +1,5 @@
-﻿namespace DSS_Scoring.DTOs
+﻿namespace DSS_Scoring.Shared.DTOs
+
 {
     public class CriterioDTO
     {

@@ -1,6 +1,5 @@
-﻿using DSS_Scoring.Models;
+﻿namespace DSS_Scoring.Shared.DTOs
 
-namespace DSS_Scoring.DTOs
 {
     public class ProyectoDTO
     {

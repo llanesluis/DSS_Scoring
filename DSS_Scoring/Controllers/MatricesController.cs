@@ -1,6 +1,6 @@
 ﻿using DSS_Scoring.Data;
-using DSS_Scoring.DTOs;
 using DSS_Scoring.Models;
+using DSS_Scoring.Shared.DTOs;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -111,7 +111,7 @@ namespace DSS_Scoring.Controllers
                 }
 
                 // Se agregará un elemento por cada alternativa registrada en el proyecto
-                resultados.Add(alternativaDTO);                
+                resultados.Add(alternativaDTO);
             }
 
             return Ok(resultados);
