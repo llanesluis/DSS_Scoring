@@ -13,6 +13,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 builder.Services.AddBlazorBootstrap();
 
+//Abe 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7243/") });
+
 // Agregar soporte para endpoint de API y rutas en Blazor
 builder.Services.AddEndpointsApiExplorer();
 
