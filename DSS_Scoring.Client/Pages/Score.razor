@@ -4,7 +4,7 @@
 @using DSS_Scoring.Shared.DTOs
 @using System.Net.Http;
 @using Newtonsoft.Json
-
+@inject HttpClient HttpClient
 
 <head>
     <title>Score</title>
@@ -67,6 +67,7 @@
 
         </tr>
     </table>
+    <p><strong>La alternativa ganadora fue:</strong> @Ganador</p>
 </body>
 
 <style>
@@ -101,10 +102,11 @@
 </style>
 @code {
     List<AlternativaWithDetailsDTO> inventa = new List<AlternativaWithDetailsDTO>();
-    int Ganador = 0;
+    string Ganador = "";
     int prueba1 = 0;
     int prueba2 = 0;
     int prueba3 = 0;
+
     public async Task cuentas()
     {
         List<CriterioWithValorDTO> VentoRider = new List<CriterioWithValorDTO>();
@@ -178,8 +180,41 @@
 
 
         }
+
         if (prueba1 > prueba2 && prueba1 > prueba3)
         {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 1)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
+
+        }
+        if (prueba2 > prueba1 && prueba2 > prueba3)
+        {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 2)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
+
+        }
+        if (prueba3 > prueba2 && prueba3 > prueba1)
+        {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 3)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
 
         }
 
