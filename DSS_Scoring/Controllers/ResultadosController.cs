@@ -60,6 +60,36 @@ namespace DSS_Scoring.Controllers
 
         }
 
+        // Obtener la lista de todos los resultados con detalles para un proyecto específico
+        // GET api/Resultados/PorIdProyecto/{idProyecto}
+        [HttpGet("PorIdProyecto/{idProyecto}")]
+        public async Task<ActionResult<IEnumerable<ResultadoWithDetailsDTO>>> GetResultadosPorProyectoIdConDetalles(int idProyecto)
+        {
+            var _resultados = await _context.Resultados.Where(r => r.IdProyecto == idProyecto).ToListAsync();
+
+            List<ResultadoWithDetailsDTO> resultados = new List<ResultadoWithDetailsDTO>();
+
+            foreach (var resultado in _resultados)
+            {
+                var proyecto = _context.Proyectos.Find(resultado.IdProyecto);
+                var alternativa = _context.Alternativas.Find(resultado.IdAlternativa, resultado.IdProyecto);
+
+                var _resultado = new ResultadoWithDetailsDTO
+                {
+                    IdProyecto = resultado.IdProyecto,
+                    IdAlternativa = resultado.IdAlternativa,
+                    Score = resultado.Score,
+                    Proyecto = proyecto.Adapt<ProyectoDTO>(),
+                    Alternativa = alternativa.Adapt<AlternativaDTO>()
+                };
+
+                resultados.Add(_resultado);
+            }
+
+            return Ok(resultados);
+
+        }
+
         // Obtiene el registro de un resultado en específico, sin detalles.
         // Necesita el id del proyecto y el id de la alternativa (necesarios)
         // GET: api/Resultados/{idProyecto}/{idAlternativa}
