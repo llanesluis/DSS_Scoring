@@ -1,30 +1,53 @@
 ﻿@page "/Pages/Criterios"
+@inject HttpClient HttpClient
+@using DSS_Scoring.Shared.DTOs
+
 
 <PageTitle>Alternativas</PageTitle>
 
 <div class="row">
+    <h2 style="font-weight: bold; margin-bottom:20px;">Criterios</h2>
     <div class="col-md-1">
-        <label for="id_proyecto">ID Proyecto</label>
+        <label for="id_proyecto">Proyecto</label>
     </div>
     <div class="col-md-1">
-        <Dropdown Color="DropdownColor.Primary">
-            <DropdownToggleButton>Proyectos</DropdownToggleButton>
-            <DropdownMenu>
-                <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 1</DropdownItem>
-                <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 2</DropdownItem>
-                <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 3</DropdownItem>
-            </DropdownMenu>
+        <Dropdown Color="DropdownColor.Primary" >
+        <DropdownToggleButton>
+            @if(proyectoSeleccionado != null){
+                @proyectoSeleccionado.Nombre
+            }else{
+                <span>Seleccionar Proyecto</span>
+            }
+        </DropdownToggleButton>
+        <DropdownMenu >
+            @if (proyectos != null && proyectos.Any())
+            {
+                @foreach (var proyecto in proyectos)
+                {
+                    <DropdownItem @key="@proyecto.Id" @onclick="()=>SeleccionarProyecto(proyecto)">@proyecto.Nombre</DropdownItem>
+                }
+            }
+        </DropdownMenu>
         </Dropdown>
     </div>
 </div>
 
 <div class="row my-4">
     <div class="col-md-1">
-        <label for="ID">ID</label>
+        <label for="ID"> ID Proyecto</label>
     </div>
-    <div class="col-md-1">
-        <input type="text" id="id_text" class="form-control">
-    </div>
+    @if(proyectoSeleccionado != null)
+    {
+        <div class="col-md-1">
+            <input type="text" id="id_text" class="form-control" @bind="proyectoSeleccionado.Id" disabled style="width: 200px;">
+        </div> 
+    }
+    else
+    {
+        <div class="col-md-1">
+            <input type="text" id="id_text" class="form-control" disabled style="width: 200px;">
+        </div> 
+    }
 </div>
 
 <div class="row my-4">
@@ -32,7 +55,7 @@
         <label for="Nombre">Nombre</label>
     </div>
     <div class="col-md-1">
-        <input type="text" id="nombre_text" class="form-control">
+        <input type="text" id="nombre_text" class="form-control" @bind="nombre">
     </div>
 </div>
 
@@ -41,10 +64,112 @@
         <label for="descripcion">Descripcion</label>
     </div>
     <div class="col-md-1">
-        <input type="text" style="width: 300px; height: 100px;" id="descripcion_text" class="form-control">
+        <input type="text" style="width: 300px; height: 100px;" id="descripcion_text" class="form-control" @bind="descripcion">
     </div>
+</div>
+<div class="row my-4">
+    <div class="col-md-1">
+        <label for="Nombre">Peso</label>
+    </div>
+    <div class="col-md-1">
+        <input type="text" id="nombre_text" class="form-control" @bind="peso" placeholder="Ingresa Valores del 1-5" style="width: 200px;">
+    </div>
+</div>
+<div class="col-md-2" style="margin-top: 30px;">
+    <button @onclick="CrearCriterio" class="btn btn-success">
+        Crear Alternativa 
+    </button>
+</div>
+<div class="col-md-2" style="margin-top: 10px;">
+    <button @onclick="LimpiarCampos" class="btn btn-warning">
+        Limpiar Campos
+    </button>
+</div>
+<div>
+    <h3 style="font-weight: bold; margin-top:20px;">Eliminar Criterios</h3>
+</div>
+<div>
+    <select name="CriteriosProyecto" id="CriteriosProyecto" Color="DropdownColor.Primary">
+        @if(criterios!= null && criterios.Any())
+        {
+            @foreach(var criterio in criterios)
+            {
+                <option value="@criterio.Id">@criterio.Nombre</option>
+            }
+        }
+        else{
+            <option>No hay criterios disponibles</option>
+        }
+    </select>
+</div>
+<div>
+    <button class="btn btn-danger" style="margin-top: 5px;">Eliminar Criterio</button>
 </div>
 
 @code {
+    private ProyectoDTO proyectoSeleccionado;
+    private string nombre;
+    private string descripcion;
 
+    private string peso;
+    private List<ProyectoDTO> proyectos = new List<ProyectoDTO>();
+    private List<CriterioDTO> criterios = new List<CriterioDTO>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            
+            proyectos = await HttpClient.GetFromJsonAsync<List<ProyectoDTO>>("/api/proyectos") ?? new List<ProyectoDTO>();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error al obtener los proyectos: {ex.Message}");
+        }        
+    }
+
+    private async Task SeleccionarProyecto(ProyectoDTO proyecto){
+        proyectoSeleccionado = proyecto;
+        try{
+            criterios = await HttpClient.GetFromJsonAsync<List<CriterioDTO>>("api/Criterios/PorIdProyecto/"+proyectoSeleccionado.Id) ?? new List<CriterioDTO>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener los criterios: {ex.Message}");
+        }
+        Console.WriteLine(proyectoSeleccionado);
+    }
+
+    private void LimpiarCampos()
+    {
+        nombre = string.Empty;  // Limpia el campo Nombre
+        descripcion = string.Empty;  // Limpia el campo Descripción
+        peso =string.Empty;
+    }
+    private async Task CrearCriterio()
+
+    {
+        // Implementa la lógica para crear la alternativa aquí
+         var nuevocriterio = new CriterioDTO
+        {
+            IdProyecto = proyectoSeleccionado.Id,
+            Nombre = nombre,
+            Descripcion = descripcion,
+            Peso =int.Parse(peso),
+        };
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("/api/Criterios", nuevocriterio);
+            if(response.IsSuccessStatusCode){
+                Console.WriteLine("Criterio creado con éxito");
+                LimpiarCampos();
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error al crear el criterio: {ex.Message}");
+        }
+    }
+    
 }
+
