@@ -2,6 +2,7 @@
 @using System.Text
 @using DSS_Scoring.Shared.DTOs
 @using System.Net.Http;
+@inject HttpClient HttpClient
 
 <PageTitle>Proyectos</PageTitle>
 
@@ -30,12 +31,49 @@
     <button class="btn btn-warning" @onclick="Limpiar"> <Icon Name="IconName.ArrowClockwise" />Cancelar</button>
 </div>
 
+<div>
+    <h3 style="font-weight: bold; margin-top:20px;">Eliminar Alternativas</h3>
+</div>
+<div>
+    <select name="Proyectos" id="Proyectos" Color="DropdownColor.Primary" style="margin-top: 10px;">
+        @if (proyectos != null && proyectos.Any())
+        {
+            @foreach (var proyectos in proyectos)
+            {
+                <option value="@proyectos.Id">@proyectos.Nombre</option>
+            }
+        }
+        else
+        {
+            <option>No hay proyectos disponibles</option>
+        }
+    </select>
+</div>
+<div>
+    <button class="btn btn-danger" style="margin-top: 10px;">Eliminar Proyecto</button>
+</div>
+
 @code{
 
     private static string Name { get; set; }
     private static string Objective { get; set; }
+    private List<ProyectoDTO> proyectos = new List<ProyectoDTO>();
 
     static string url = "http://localhost:5173/api/proyectos";
+
+    public ProyectoDTO Proyecto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            proyectos = await HttpClient.GetFromJsonAsync<List<ProyectoDTO>>("/api/proyectos") ?? new List<ProyectoDTO>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al obtener los proyectos: {ex.Message}");
+        }
+    }
 
     async void UploadData()
     {
@@ -43,7 +81,7 @@
         using (HttpClient client = new HttpClient())
         {
 
-            ProyectoDTO Proyecto = new ProyectoDTO
+            Proyecto = new ProyectoDTO
             {
                 Id = 35,
                 Nombre = Name,
