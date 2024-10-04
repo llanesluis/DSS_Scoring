@@ -36,6 +36,13 @@ builder.Services.AddSwaggerGen(c => {
     //c.IncludeXmlComments(xmlPath);
 });
 
+
+// Agregar el HttpClient para usar el servicio durante SSR
+// El CLIENTE lo necesita para hacer peticiones al servidor (a veces) porque este Program.cs es el entry point de la app
+builder.Services.AddScoped(sp=> new HttpClient {
+    BaseAddress = new Uri("http://localhost:5173/")
+});
+
 var app = builder.Build();
 
 
