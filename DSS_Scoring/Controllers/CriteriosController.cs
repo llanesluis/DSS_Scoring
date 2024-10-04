@@ -84,5 +84,24 @@ namespace DSS_Scoring.Controllers
             return CreatedAtAction("Get", new { id = nuevoCriterio.Id, idProyecto = nuevoCriterio.IdProyecto }, nuevoCriterio.Adapt<CriterioDTO>());
 
         }
+
+        // Eliminar un criterio por su Id y el Id del proyecto al que pertenece (ambas Id son necesarias y deben existir)
+        // DELETE: api/Criterios/Eliminar/{id}/{idProyecto}
+        [HttpDelete("Eliminar/{id}/{idProyecto}")]
+        public async Task<IActionResult> DeleteById(int id, int idProyecto)
+        {
+            var criterio = await _context.Criterios.FindAsync(id, idProyecto);
+
+            if (criterio == null)
+            {
+                return NotFound();
+            }
+
+            _context.Criterios.Remove(criterio);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
     }
 }

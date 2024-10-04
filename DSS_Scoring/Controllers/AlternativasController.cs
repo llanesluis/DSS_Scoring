@@ -82,5 +82,24 @@ namespace DSS_Scoring.Controllers
 
             return CreatedAtAction("Get", new { id = nuevaAlternativa.Id, idProyecto = nuevaAlternativa.IdProyecto }, nuevaAlternativa.Adapt<AlternativaDTO>());
         }
+
+        // Eliminar una alternativa por su Id y el Id del proyecto al que pertenece (ambas Id son necesarias y deben existir)
+        // DELETE: api/Alternativas/Eliminar/{id}/{idProyecto}
+        [HttpDelete("Eliminar/{id}/{idProyecto}")]
+        public async Task<IActionResult> DeleteById(int id, int idProyecto)
+        {
+            var alternativa = await _context.Alternativas.FindAsync(id, idProyecto);
+
+            if (alternativa == null)
+            {
+                return NotFound();
+            }
+
+            _context.Alternativas.Remove(alternativa);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
     }
 }
