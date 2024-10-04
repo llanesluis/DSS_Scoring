@@ -1,18 +1,32 @@
 ﻿@page "/Pages/Alternativas"
+@using DSS_Scoring.Shared.DTOs
+@inject HttpClient HttpClient
+@using System.Text.Json
 
 <PageTitle>Alternativas</PageTitle>
 
 <div class="row">
+    <h2 style="font-weight: bold; margin-bottom:20px;">Alternativas</h2>
     <div class="col-md-1">
-        <label for="id_proyecto">ID Proyecto</label>
+        <label for="id_proyecto">Proyecto</label>
     </div>
     <div class="col-md-1">
-        <Dropdown Color="DropdownColor.Primary">
-        <DropdownToggleButton>Proyectos</DropdownToggleButton>
-        <DropdownMenu>
-            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 1</DropdownItem>
-            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 2</DropdownItem>
-            <DropdownItem To="#" Type="DropdownItemType.Link">Proyecto 3</DropdownItem>
+        <Dropdown Color="DropdownColor.Primary" >
+        <DropdownToggleButton>
+            @if(proyectoSeleccionado != null){
+                @proyectoSeleccionado.Nombre
+            }else{
+                <span>Seleccionar Proyecto</span>
+            }
+        </DropdownToggleButton>
+        <DropdownMenu >
+            @if (proyectos != null && proyectos.Any())
+            {
+                @foreach (var proyecto in proyectos)
+                {
+                    <DropdownItem @key="@proyecto.Id" @onclick="()=>SeleccionarProyecto(proyecto)">@proyecto.Nombre</DropdownItem>
+                }
+            }
         </DropdownMenu>
         </Dropdown>
     </div>
@@ -20,19 +34,28 @@
 
 <div class="row my-4">
     <div class="col-md-1">
-        <label for="ID">ID</label>
+        <label for="ID"> ID Proyecto</label>
     </div>
-    <div class="col-md-1">
-        <input type="text" id="id_text" class="form-control">
-    </div>
+    @if(proyectoSeleccionado != null)
+    {
+        <div class="col-md-1">
+            <input type="text" id="id_text" class="form-control" @bind="proyectoSeleccionado.Id" disabled style="width: 200px;">
+        </div> 
+    }
+    else
+    {
+        <div class="col-md-1">
+            <input type="text" id="id_text" class="form-control" disabled style="width: 200px;">
+        </div> 
+    }
 </div>
     
 <div class="row my-4">
     <div class="col-md-1">
-        <label for="Nombre">Nombre</label>
+        <label for="Nombre";>Nombre</label>
     </div>
     <div class="col-md-1">
-        <input type="text" id="nombre_text" class="form-control">
+        <input type="text" id="nombre_text" class="form-control" @bind="nombre" style="width: 200px">
     </div>
 </div>
 
@@ -41,10 +64,99 @@
         <label for="descripcion">Descripcion</label>
     </div>
     <div class="col-md-1">
-        <input type="text" style="width: 300px; height: 100px;" id="descripcion_text" class="form-control">
+        <input type="text" style="width: 300px; height: 100px;" id="descripcion_text" @bind="descripcion" class="form-control">
     </div>
 </div>
 
-@code {
+<div class="col-md-2" style="margin-top: 30px;">
+    <button @onclick="CrearAlternativa" class="btn btn-success">
+        Crear Alternativa 
+    </button>
+</div>
+<div class="col-md-2" style="margin-top: 10px;">
+    <button @onclick="LimpiarCampos" class="btn btn-warning">
+        Limpiar Campos
+    </button>
+</div>
+<div>
+    <h3 style="font-weight: bold; margin-top:20px;">Eliminar Alternativas</h3>
+</div>
+<div>
+    <select name="AlternativasProyecto" id="AlternativasProyecto" Color="DropdownColor.Primary" style="margin-top: 10px;">
+        @if(alternativas!= null && alternativas.Any())
+        {
+            @foreach(var alternativa in alternativas)
+            {
+                <option value="@alternativa.Id">@alternativa.Nombre</option>
+            }
+        }
+        else{
+            <option>No hay Alternativas disponibles</option>
+        }
+    </select>
+</div>
+<div>
+    <button class="btn btn-danger" style="margin-top: 10px;">Eliminar Alternativa</button>
+</div>
 
+@code {
+    private ProyectoDTO proyectoSeleccionado;
+    private string nombre;
+    private string descripcion;
+    private List<ProyectoDTO> proyectos = new List<ProyectoDTO>();
+    private List<AlternativaDTO> alternativas = new List<AlternativaDTO>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            proyectos = await HttpClient.GetFromJsonAsync<List<ProyectoDTO>>("/api/proyectos") ?? new List<ProyectoDTO>();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error al obtener los proyectos: {ex.Message}");
+        }        
+    }
+
+    private async Task SeleccionarProyecto(ProyectoDTO proyecto){
+        proyectoSeleccionado = proyecto;
+        try{
+            alternativas = await HttpClient.GetFromJsonAsync<List<AlternativaDTO>>("api/Alternativas/PorIdProyecto/"+proyectoSeleccionado.Id) ?? new List<AlternativaDTO>();
+        }
+        catch(Exception ex){
+            Console.WriteLine($"Error al obtener las alternativas: {ex.Message}");
+        }
+        Console.WriteLine(proyectoSeleccionado);
+    }
+    private void LimpiarCampos()
+    {
+        nombre = string.Empty;  // Limpia el campo Nombre
+        descripcion = string.Empty;  // Limpia el campo Descripción
+    }
+    private async Task CrearAlternativa()
+
+    {
+        // Implementa la lógica para crear la alternativa aquí
+         var nuevaAlternativa = new AlternativaDTO
+        {
+            IdProyecto = proyectoSeleccionado.Id,
+            Nombre = nombre,
+            Descripcion = descripcion
+        };
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("/api/alternativas", nuevaAlternativa);
+            if(response.IsSuccessStatusCode){
+                Console.WriteLine("Alternativa creada con éxito");
+                LimpiarCampos();
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error al crear alternativa: {ex.Message}");
+        }
+    }
 }
+
+
+
