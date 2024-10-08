@@ -28,7 +28,6 @@
                 {
                     <th>@alternativa.Nombre</th>
                 }
-                <th>    </th>
             </tr>
         </thead>
         <tbody>
@@ -47,36 +46,27 @@
                                    @oninput="(e) => UpdateTempValor(criterio.Id, alternativa.Id, ((ChangeEventArgs)e).Value?.ToString() ?? string.Empty)" />
                         </td>
                     }
-                    <td>
-                        <!-- Botón para actualizar la fila -->
-                        <button @onclick="() => GuardarValoresFila(criterio.Id)">Guardar Fila</button>
-                    </td>
                 </tr>
             }
         </tbody>
     </table>
+    <!-- Botón para guardar todos los datos de la tabla -->
+    <button @onclick="GuardarTodosLosValores">Guardar</button>
 }
 
 @code {
-    // Listas que contendrán los datos de proyectos, criterios y alternativas
     private List<ProyectoDTO> Proyectos { get; set; } = new();
     private List<CriterioDTO> Criterios { get; set; } = new();
     private List<AlternativaDTO> Alternativas { get; set; } = new();
-    private List<MatrizDTO> Matriz1 { get; set; } = new(); // Matriz para almacenar valores
-
-    // Diccionario temporal para almacenar los valores modificados
+    private List<MatrizDTO> Matriz1 { get; set; } = new();
     private Dictionary<(int idCriterio, int idAlternativa), int> TempMatrizValores { get; set; } = new();
-
-    // Proyecto seleccionado
     private ProyectoDTO? ProyectoSeleccionado { get; set; }
 
-    // Este método se ejecuta al inicializar la página
     protected override async Task OnInitializedAsync()
     {
         await CargarProyectosAsync();
     }
 
-    // Método para cargar los proyectos desde la API
     private async Task CargarProyectosAsync()
     {
         try
@@ -89,7 +79,6 @@
         }
     }
 
-    // Método para manejar la selección de un proyecto
     private async Task OnProyectoSeleccionado(string? idProyectoStr)
     {
         if (int.TryParse(idProyectoStr, out int idProyecto))
@@ -102,19 +91,15 @@
         }
     }
 
-    // Método para cargar los datos del proyecto seleccionado
     private async Task CargarDatosProyectoAsync(int idProyecto)
     {
         try
         {
-            // Llamada para obtener las alternativas desde un endpoint específico
             var alternativasResultado = await Http.GetFromJsonAsync<List<AlternativaDTO>>($"api/Alternativas/PorIdProyecto/{idProyecto}");
-            // Llamada para obtener los criterios desde otro endpoint específico
             var criteriosResultado = await Http.GetFromJsonAsync<List<CriterioDTO>>($"api/Criterios/PorIdProyecto/{idProyecto}");
 
             if (alternativasResultado != null)
             {
-                // Asignar las alternativas obtenidas
                 Alternativas = alternativasResultado;
             }
             else
@@ -124,7 +109,6 @@
 
             if (criteriosResultado != null)
             {
-                // Asignar los criterios obtenidos
                 Criterios = criteriosResultado;
             }
             else
@@ -132,8 +116,7 @@
                 Console.WriteLine("No se encontraron Criterios");
             }
 
-            // Inicializar la matriz con valores por defecto (opcional)
-            Matriz1 ??= new List<MatrizDTO>();  // Asegura que la lista esté inicializada antes de trabajar con ella.
+            Matriz1 ??= new List<MatrizDTO>();
 
             foreach (var criterio in Criterios)
             {
@@ -144,7 +127,7 @@
                             IdProyecto = idProyecto,
                             IdAlternativa = alternativa.Id,
                             IdCriterio = criterio.Id,
-                            Valor = 0 // Valor inicial, puedes cambiarlo según sea necesario
+                            Valor = 0
                         });
                 }
             }
@@ -155,68 +138,75 @@
         }
     }
 
-    // Método para obtener el valor de una celda en la matriz
     private int GetValor(int idCriterio, int idAlternativa)
     {
         var item = Matriz1.FirstOrDefault(m => m.IdCriterio == idCriterio && m.IdAlternativa == idAlternativa);
         return item?.Valor ?? 0;
     }
 
-    // Método temporal para actualizar el valor en el diccionario temporal
     private void UpdateTempValor(int idCriterio, int idAlternativa, string valor)
     {
-        // Validar que el valor ingresado esté entre 1 y 9
         if (int.TryParse(valor, out int intValue) && intValue >= 1 && intValue <= 9)
         {
             TempMatrizValores[(idCriterio, idAlternativa)] = intValue;
         }
     }
 
-    // Método para guardar los valores de la fila en la matriz y enviarlos a la API
-    private async Task GuardarValoresFila(int idCriterio)
+    private async Task GuardarTodosLosValores()
     {
         var valoresParaGuardar = new List<MatrizDTO>();
 
-        // Filtrar las alternativas que están en la fila de este criterio
-        foreach (var alternativa in Alternativas)
+        foreach (var criterio in Criterios)
         {
-            if (TempMatrizValores.TryGetValue((idCriterio, alternativa.Id), out int valor))
+            foreach (var alternativa in Alternativas)
             {
-                // Actualizar la matriz con el nuevo valor
-                var item = Matriz1.FirstOrDefault(m => m.IdCriterio == idCriterio && m.IdAlternativa == alternativa.Id);
-                if (item != null)
+                if (TempMatrizValores.TryGetValue((criterio.Id, alternativa.Id), out int valor))
                 {
-                    item.Valor = valor;
-                    valoresParaGuardar.Add(item); // Agregar a la lista de valores a guardar
+                    var item = Matriz1.FirstOrDefault(m => m.IdCriterio == criterio.Id && m.IdAlternativa == alternativa.Id);
+                    if (item != null)
+                    {
+                        item.Valor = valor;
+                    }
+                    else
+                    {
+                        item = new MatrizDTO
+                            {
+                                IdProyecto = ProyectoSeleccionado?.Id ?? 0,
+                                IdAlternativa = alternativa.Id,
+                                IdCriterio = criterio.Id,
+                                Valor = valor
+                            };
+                        Matriz1.Add(item);
+                    }
+                    valoresParaGuardar.Add(item);
                 }
             }
         }
 
-        // Llamada al método para guardar los valores mediante un POST a la API
         if (valoresParaGuardar.Count > 0)
         {
-            await GuardarMatrizAsync(valoresParaGuardar);
+            foreach (var valor in valoresParaGuardar)
+            {
+                await GuardarMatrizAsync(valor);
+            }
         }
 
-        // Limpiar los valores temporales de esta fila
-        foreach (var alternativa in Alternativas)
-        {
-            TempMatrizValores.Remove((idCriterio, alternativa.Id));
-        }
+        TempMatrizValores.Clear();
     }
 
-    // Método para enviar los datos al servidor mediante POST
-    private async Task GuardarMatrizAsync(List<MatrizDTO> matrizActualizada)
+    private async Task GuardarMatrizAsync(MatrizDTO matriz)
     {
-        var respuesta = await Http.PostAsJsonAsync("api/Matrices", matrizActualizada);
+        var respuesta = await Http.PostAsJsonAsync("api/Matrices", matriz);
 
         if (respuesta.IsSuccessStatusCode)
         {
-            Console.WriteLine("Valores guardados correctamente.");
+            Console.WriteLine("Valor guardado correctamente.");
         }
         else
         {
-            Console.WriteLine("Error al guardar los valores.");
+            var contenidoError = await respuesta.Content.ReadAsStringAsync();
+            Console.WriteLine($"Error al guardar el valor: {respuesta.StatusCode}");
+            Console.WriteLine($"Detalles del error: {contenidoError}");
         }
     }
 }
