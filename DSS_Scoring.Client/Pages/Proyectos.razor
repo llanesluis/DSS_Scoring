@@ -35,7 +35,7 @@
     <h3 style="font-weight: bold; margin-top:20px;">Eliminar Alternativas</h3>
 </div>
 <div>
-    <select name="Proyectos" id="Proyectos" Color="DropdownColor.Primary" style="margin-top: 10px;">
+    <select @bind="ProyectoSeleccionado" name="Proyectos" id="Proyectos" Color="DropdownColor.Primary" style="margin-top: 10px;">
         @if (proyectos != null && proyectos.Any())
         {
             @foreach (var proyectos in proyectos)
@@ -54,6 +54,8 @@
 </div>
 
 @code{
+
+    private int ProyectoSeleccionado { get; set; }
 
     private static string Name { get; set; }
     private static string Objective { get; set; }
@@ -95,7 +97,12 @@
 
     async Task EliminarProyecto()
     {
-        
+        using (HttpClient client = new HttpClient())
+        {
+
+            await client.PostAsJsonAsync(url, Proyecto);
+
+        }
     }
     public void Limpiar()
     {
