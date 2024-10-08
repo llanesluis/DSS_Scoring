@@ -61,7 +61,7 @@
     private static string Objective { get; set; }
     private List<ProyectoDTO> proyectos = new List<ProyectoDTO>();
 
-    static string url = "http://localhost:5173/api/proyectos";
+    static string url = "http://localhost:7243/api/proyectos";
 
     public ProyectoDTO Proyecto;
 
@@ -100,7 +100,7 @@
         using (HttpClient client = new HttpClient())
         {
 
-            await client.PostAsJsonAsync(url, Proyecto);
+            await client.DeleteAsync($"api/proyectos/eliminar/{ProyectoSeleccionado}");
 
         }
     }
