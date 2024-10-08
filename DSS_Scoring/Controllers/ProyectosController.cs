@@ -89,5 +89,24 @@ namespace DSS_Scoring.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = nuevoProyecto.Id }, nuevoProyecto.Adapt<ProyectoDTO>()); // Devuelve 201 Created con la ruta del nuevo recurso
         }
+
+        // Eliminar un proyecto por su id
+        // POST: api/Proyectos
+        [HttpDelete("Eliminar/{id}")]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            var proyecto = await _context.Proyectos.FindAsync(id);
+
+            if (proyecto == null)
+            {
+                return NotFound();
+            }
+
+            _context.Proyectos.Remove(proyecto);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
     }
 }
