@@ -50,7 +50,7 @@
     </select>
 </div>
 <div>
-    <button class="btn btn-danger" style="margin-top: 10px;">Eliminar Proyecto</button>
+    <button @onclick="EliminarProyecto" class="btn btn-danger" style="margin-top: 10px;">Eliminar Proyecto</button>
 </div>
 
 @code{
@@ -83,7 +83,6 @@
 
             Proyecto = new ProyectoDTO
             {
-                Id = 35,
                 Nombre = Name,
                 Objetivo = Objective
             };
@@ -94,6 +93,10 @@
 
     }
 
+    async Task EliminarProyecto()
+    {
+        
+    }
     public void Limpiar()
     {
         Name = "";
