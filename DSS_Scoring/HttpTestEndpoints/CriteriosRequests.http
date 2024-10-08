@@ -10,6 +10,10 @@ Content-Type: application/json
 
 {
     "idProyecto": 12,
+    "nombre": "NUEVO",
     "descripcion": "EL QUE ESTE MAS GORDO TIENE MAS PUNTAJE",
     "peso": 5
 }
+
+### Eliminar una alternativa por su ID
+DELETE  http://localhost:5173/api/criterios/eliminar/15/12

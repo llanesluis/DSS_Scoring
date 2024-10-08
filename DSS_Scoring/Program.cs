@@ -13,6 +13,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 builder.Services.AddBlazorBootstrap();
 
+//Abe 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7243/") });
+
 // Agregar soporte para endpoint de API y rutas en Blazor
 builder.Services.AddEndpointsApiExplorer();
 
@@ -34,6 +37,13 @@ builder.Services.AddSwaggerGen(c => {
     //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}";
     //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     //c.IncludeXmlComments(xmlPath);
+});
+
+
+// Agregar el HttpClient para usar el servicio durante SSR
+// El CLIENTE lo necesita para hacer peticiones al servidor (a veces) porque este Program.cs es el entry point de la app
+builder.Services.AddScoped(sp=> new HttpClient {
+    BaseAddress = new Uri("http://localhost:5173/")
 });
 
 var app = builder.Build();

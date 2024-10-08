@@ -1,5 +1,230 @@
 ﻿@page "/Pages/Score"
 
+@using System.Text
+@using DSS_Scoring.Shared.DTOs
+@using System.Net.Http;
+@using Newtonsoft.Json
+@inject HttpClient HttpClient
+
+<head>
+    <title>Score</title>
+</head>
+<body>
+    <h1>Bienvenido al apartado de Score</h1>
+    <p><strong>Nombre del proyecto: </strong> Moto</p>
+    <p><strong>Objetivo del proyecto: </strong> Elegir la mejor moto</p>
+
+
+    <table class="Tabla">
+        <tr>
+            <th>Criterios</th>
+            <th>Ponderación</th>
+            @foreach (var score in inventa)
+            {
+                    <th>@score.Nombre</th>
+            }
+        </tr>
+        @foreach (var score in inventa)
+        {
+            if (score.IdAlternativa == 1)
+            {
+                foreach (var si in @score.Criterios)
+                {
+
+                                <tr>
+                                    <td>@si.Nombre</td>
+                                    <td>@si.Peso</td>
+                                </tr>
+
+                }
+            }
+
+        }
+
+        <tr>
+
+
+
+
+        </tr>
+
+        <tr>
+            <td colspan="2">Score</td>
+            @foreach (var score in inventa)
+            {
+                int valor = 0;
+
+                foreach (var si in @score.Criterios)
+                {
+
+                    int por = (si.Valor) * (si.Peso);
+                    valor = valor + por;
+                }
+                         <td>@valor</td>
+
+
+            }
+
+        </tr>
+    </table>
+    <p><strong>La alternativa ganadora fue:</strong> @Ganador</p>
+</body>
+
+<style>
+    .Tabla {
+        border: 1px solid #006699;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+        .Tabla th {
+            background-color: #0a72a7;
+            color: white;
+            border: solid 2px black;
+            padding: 20px;
+        }
+
+        .Tabla td {
+            border: solid 2px black;
+            background-color: #8ad0f3;
+            padding: 20px;
+        }
+
+    h1 {
+        text-align: center;
+    }
+
+    p {
+        font-size: 20px;
+        text-align: center;
+    }
+</style>
 @code {
+    List<AlternativaWithDetailsDTO> inventa = new List<AlternativaWithDetailsDTO>();
+    string Ganador = "";
+    int prueba1 = 0;
+    int prueba2 = 0;
+    int prueba3 = 0;
+
+    public async Task cuentas()
+    {
+        List<CriterioWithValorDTO> VentoRider = new List<CriterioWithValorDTO>();
+        VentoRider.Add(new CriterioWithValorDTO { Id = 1, Nombre = "Precio", Descripcion = "Si", Peso = 5, Valor = 5 });
+        VentoRider.Add(new CriterioWithValorDTO { Id = 2, Nombre = "Consumo", Descripcion = "Si", Peso = 5, Valor = 9 });
+        VentoRider.Add(new CriterioWithValorDTO { Id = 3, Nombre = "Estética", Descripcion = "Si", Peso = 2, Valor = 2 });
+        VentoRider.Add(new CriterioWithValorDTO { Id = 4, Nombre = "Comodidad y seguridad", Descripcion = "Si", Peso = 3, Valor = 4 });
+        VentoRider.Add(new CriterioWithValorDTO { Id = 5, Nombre = "Mantenimiento", Descripcion = "Si", Peso = 3, Valor = 7 });
+
+        List<CriterioWithValorDTO> crossmax = new List<CriterioWithValorDTO>();
+        crossmax.Add(new CriterioWithValorDTO { Id = 1, Nombre = "Precio", Descripcion = "Si", Peso = 5, Valor = 8 });
+        crossmax.Add(new CriterioWithValorDTO { Id = 2, Nombre = "Consumo", Descripcion = "Si", Peso = 5, Valor = 7 });
+        crossmax.Add(new CriterioWithValorDTO { Id = 3, Nombre = "Estética", Descripcion = "Si", Peso = 2, Valor = 7 });
+        crossmax.Add(new CriterioWithValorDTO { Id = 4, Nombre = "Comodidad y seguridad", Descripcion = "Si", Peso = 3, Valor = 5 });
+        crossmax.Add(new CriterioWithValorDTO { Id = 5, Nombre = "Mantenimiento", Descripcion = "Si", Peso = 3, Valor = 7 });
+
+        List<CriterioWithValorDTO> ninja = new List<CriterioWithValorDTO>();
+        ninja.Add(new CriterioWithValorDTO { Id = 3, Nombre = "Estética", Descripcion = "Si", Peso = 2, Valor = 9 });
+        ninja.Add(new CriterioWithValorDTO { Id = 4, Nombre = "Comodidad y seguridad", Descripcion = "Si", Peso = 3, Valor = 7 });
+        ninja.Add(new CriterioWithValorDTO { Id = 5, Nombre = "Mantenimiento", Descripcion = "Si", Peso = 3, Valor = 4 });
+        ninja.Add(new CriterioWithValorDTO { Id = 2, Nombre = "Consumo", Descripcion = "Si", Peso = 5, Valor = 5 });
+        ninja.Add(new CriterioWithValorDTO { Id = 1, Nombre = "Precio", Descripcion = "Si", Peso = 5, Valor = 9 });
+
+        List<AlternativaWithDetailsDTO> Listaalt = new List<AlternativaWithDetailsDTO>();
+        Listaalt.Add(new AlternativaWithDetailsDTO { IdAlternativa = 1, IdProyecto = 1, Nombre = "Vento Rider", Descripcion = "Ladescri", Criterios = VentoRider });
+        Listaalt.Add(new AlternativaWithDetailsDTO { IdAlternativa = 2, IdProyecto = 1, Nombre = "Vento Crossmax", Descripcion = "Ladescri", Criterios = crossmax });
+        Listaalt.Add(new AlternativaWithDetailsDTO { IdAlternativa = 3, IdProyecto = 1, Nombre = "Kawasaki Ninja H2R", Descripcion = "Ladescri", Criterios = ninja });
+
+
+        inventa = Listaalt;
+
+        @foreach (var score in inventa)
+        {
+            int valor = 0;
+            if (score.IdAlternativa == 1)
+            {
+
+                foreach (var si in @score.Criterios)
+                {
+
+                    int por = (si.Valor) * (si.Peso);
+                    valor = valor + por;
+                }
+                prueba1 = valor;
+
+            }
+            if (score.IdAlternativa == 2)
+            {
+
+                foreach (var si in @score.Criterios)
+                {
+
+                    int por = (si.Valor) * (si.Peso);
+                    valor = valor + por;
+                }
+                prueba2 = valor;
+
+            }
+            if (score.IdAlternativa == 3)
+            {
+
+                foreach (var si in @score.Criterios)
+                {
+
+                    int por = (si.Valor) * (si.Peso);
+                    valor = valor + por;
+                }
+                prueba3 = valor;
+
+            }
+
+
+        }
+
+        if (prueba1 > prueba2 && prueba1 > prueba3)
+        {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 1)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
+
+        }
+        if (prueba2 > prueba1 && prueba2 > prueba3)
+        {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 2)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
+
+        }
+        if (prueba3 > prueba2 && prueba3 > prueba1)
+        {
+            string nombre = "";
+            @foreach (var score in inventa)
+            {
+                if (score.IdAlternativa == 3)
+                {
+                    Ganador = score.Nombre;
+                }
+            }
+
+        }
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await cuentas();
+    }
+
+
 
 }
+
