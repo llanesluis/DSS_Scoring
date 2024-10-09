@@ -61,7 +61,7 @@
     private static string Objective { get; set; }
     private List<ProyectoDTO> proyectos = new List<ProyectoDTO>();
 
-    static string url = "http://localhost:7243/api/proyectos";
+    static string url = "http://localhost:5173/api/proyectos";
 
     public ProyectoDTO Proyecto;
 
@@ -80,28 +80,22 @@
     async void UploadData()
     {
 
-        using (HttpClient client = new HttpClient())
+        Proyecto = new ProyectoDTO
         {
+            Nombre = Name,
+            Objetivo = Objective
+        };
 
-            Proyecto = new ProyectoDTO
-            {
-                Nombre = Name,
-                Objetivo = Objective
-            };
-
-            await client.PostAsJsonAsync(url, Proyecto);
-
-        }
+        await HttpClient.PostAsJsonAsync(url, Proyecto);
 
     }
 
     async Task EliminarProyecto()
     {
-        using (HttpClient client = new HttpClient())
-        {
-             await client.DeleteAsync($"http://localhost:5173/api/proyectos/eliminar/{ProyectoSeleccionado}");
-        }
+        await HttpClient.DeleteAsync($"http://localhost:5173/api/proyectos/eliminar/{ProyectoSeleccionado}");
+        Limpiar();
     }
+
     public void Limpiar()
     {
         Name = "";
