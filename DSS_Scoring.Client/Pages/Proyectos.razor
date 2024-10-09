@@ -80,30 +80,22 @@
     async void UploadData()
     {
 
-        using (HttpClient client = new HttpClient())
+        Proyecto = new ProyectoDTO
         {
+            Nombre = Name,
+            Objetivo = Objective
+        };
 
-            Proyecto = new ProyectoDTO
-            {
-                Nombre = Name,
-                Objetivo = Objective
-            };
-
-            await client.PostAsJsonAsync(url, Proyecto);
-
-        }
+        await HttpClient.PostAsJsonAsync(url, Proyecto);
 
     }
 
     async Task EliminarProyecto()
     {
-        using (HttpClient client = new HttpClient())
-        {
-
-            await client.PostAsJsonAsync(url, Proyecto);
-
-        }
+        await HttpClient.DeleteAsync($"http://localhost:5173/api/proyectos/eliminar/{ProyectoSeleccionado}");
+        Limpiar();
     }
+
     public void Limpiar()
     {
         Name = "";
