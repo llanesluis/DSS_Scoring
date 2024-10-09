@@ -99,9 +99,7 @@
     {
         using (HttpClient client = new HttpClient())
         {
-
-            await client.DeleteAsync($"api/proyectos/eliminar/{ProyectoSeleccionado}");
-
+             await client.DeleteAsync($"http://localhost:5173/api/proyectos/eliminar/{ProyectoSeleccionado}");
         }
     }
     public void Limpiar()
